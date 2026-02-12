@@ -1,0 +1,1233 @@
+:root {
+  --bg-color: hsl(181, 41%, 79.4%);
+  --text-color: hsl(345,100%,25.1%);
+  --accent-color: hsl(51,47%,60.7%);
+  --DMaccent-color: hsl(from var(--text-color) h s calc(l - 30));
+}
+
+/* For Dark Mode JS Implementation 
+[data-theme="dark"] {
+  --bg-color: hsl(345, 95%, 16%);
+  --text-color:  hsl(51, 34%, 43%);
+  --accent-color: hsl(181, 22%, 56%);
+  --DMaccent-color: hsl(from var(--text-color) h s calc(l - 30));
+}
+  */
+
+       /* html {
+            scroll-behavior: smooth;
+        } */
+
+/*Scroll Bar Styling - noncompat with IE and Safari currently*/
+@media only screen and (min-width: 1020px) {
+    /* width */
+    ::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #21212100;
+  }
+  
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: var(--bg-color);
+    border-radius: 10px;
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-color);
+  }
+
+  body:has(.switch__input:checked)::-webkit-scrollbar-thumb {
+    background: var(--text-color);
+  }
+}
+
+
+/*Navigation Bar*/
+        .navBar {
+            top: 0;
+            left: 0;
+            margin: 0;
+            background-color: none;
+            position: absolute;
+            width: 100vw;
+            max-width: 100%;
+            height: 50px;
+            z-index: 1;
+        }
+
+        .homeIcon {
+            display: block;
+            position: absolute;
+            width: 18px;
+            margin: auto;
+            z-index: 5;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%), scale(1.5);
+        }
+
+        .homeIcon::before {
+            content: "";
+            cursor: pointer;
+            display: block;
+            opacity: 1;
+            position: absolute;
+            background-image: linear-gradient(to right, var(--accent-color), var(--accent-color));
+            background-position: center;
+            transition: 0.3s ease;
+            z-index: -1;
+            width: 0px;
+            height: 50px;
+            top: 0%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50px;
+            margin: 0px auto 0px auto;
+        }
+
+        .homeIcon:hover::before {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            transition: 0.3s ease;
+        }
+
+        body:has(.switch__input:checked) .homeIcon::before {
+            content: "";
+            cursor: pointer;
+            display: block;
+            opacity: 1;
+            position: absolute;
+            background-image: linear-gradient(to right, var(--DMaccent-color), var(--DMaccent-color));
+        }
+
+        .homeIconSVGPath {
+            fill: var(--text-color);
+        }
+
+        .navWrapper {
+            align-self: right;
+        }
+
+        .text-navWrapper {
+            display: none;
+        }
+
+       
+
+/*Menu Styles*/
+    .navWrapper, .nav, .menu li {
+        display: flex;
+        justify-content: left;
+        align-items: center;
+        z-index: 3;
+    }
+
+    .nav {
+        position: absolute;
+        top: 0;
+        right: 0;
+        background-color: #212121;
+        padding: none;
+        border-radius: 2px;
+        overflow: hidden;
+        max-width: 100%;
+    }
+
+    .menu {
+        position: relative;
+        left: -12%;
+        margin: 0;
+        padding: 0;
+        width: 0;
+        overflow: hidden;
+        display: none;
+    }
+
+    .nav input:checked ~ .menu {
+        width: 100vw;
+        max-width: 100%;
+        display: inline-block;
+    }
+
+    .menu li {
+        list-style: none;
+        margin: 10px 10px 42px 0px;
+        font-weight: 900;
+        line-height: 1.2em;
+        align-content: left;
+    }
+
+    .menu li a {
+        text-decoration: none;
+    }
+
+    .menu li a:hover {
+        color: var(--bg-color);
+        transition: 0.1s;
+        text-decoration: underline;
+    }
+
+    /*margin: 70% 0px 0px 0px;*/
+
+    @media only screen and (min-width: 500px) {
+        .nav input:checked ~ .menu {
+            width: 100vw;
+            max-width: 100%;
+        }
+        .menu li {
+            list-style: none;
+        }
+
+        #menu-foot {
+            width: 80%;
+            margin: 40% 0px 0px 0px;
+        }  
+
+    }
+
+/*Nav Icon*/
+    .nav input {
+        position: relative;
+        right: 0px;
+        width: 40px;
+        height: 40px;
+        cursor: pointer;
+        opacity: 0;
+    }
+    
+    .nav input:checked  {
+        position: relative;
+        height: 100vh;
+        max-height: 100%;
+    }
+
+    /*.nav :not(input:checked) {
+        transition: 0.35s;
+    }*/
+
+    .nav span {
+        position: absolute;
+        top: 20px;
+        right: 10px;
+        width: 30px;
+        height: 3px;
+        border-radius: 5px;
+        background-color: #ffffff;
+        pointer-events: none;
+        z-index: 5;
+        transition-duration: 0.5s;
+    }
+
+    .nav span:hover {
+        background-color: var(--bg-color);
+    }
+
+    .nav input:checked ~ span {
+        background-color: var(--bg-color);
+    }
+
+    .nav input:checked ~ span:nth-child(4) {
+        transform: translateY(0) rotate(-45deg);
+    }
+
+    .nav span:nth-child(2) {
+        transform: translateY(-8px);
+    }
+
+    .nav input:checked ~ span:nth-child(2) {
+        transform: translateY(0) rotate(-45deg);
+    }
+    .nav span:nth-child(3) {
+        transform: translateY(8px);
+    }
+
+    .nav input:checked ~ span:nth-child(3) {
+        transform: translateY(0) rotate(45deg);
+        background-color: var(--bg-color);
+        z-index: 4;
+    }
+
+    .nav span:nth-child(4) {
+        transform: translateY(0px);
+    }
+
+    .nav input:checked ~ span:nth-child(4) {
+        transform: translateY(0) rotate(-45deg);
+    }
+
+   /*input:checked {
+        position: absolute;
+        right: -85%;
+        width: 200px;
+    } This was fighting Dark Mode - reassess with Menu implementation*/
+
+/*Close Nav Icon*/
+
+/*Tablet Breakpoint*/
+ @media only screen and (min-width: 760px){
+
+    #navTitlemob {
+        display: none;
+    }
+
+    .navWrapper {
+        display: none;
+    }
+
+    .nav span {
+        top: 38px;
+    }
+
+    .navTitle {
+        position: absolute;
+        display: block;
+        left: 0;
+        right: 0;
+        top: 0;
+        margin-left: 125px;
+        margin-right: auto;
+        text-align: left;
+        padding: 0px 0px 0px 0px;
+        line-height: 0pt;
+    }
+}
+/*Tablet Breakpoint Close*/
+
+/*Text Nav*/
+@media only screen and (min-width: 760px) {
+    .text-navWrapper {
+        display: block;
+        position: absolute;
+    }
+
+    .text-nav {
+        position: absolute;
+        padding: 0px 5px 0px 0px;
+        transition: 0.5s;
+        border-radius: 2px;
+        overflow: hidden;
+    }
+
+    .text-navWrapper, .text-nav, .textMenu {
+        display: flex;
+        justify-content: right;
+        align-items: center;
+        top: 5px;
+        right: 0px;
+    }
+
+    .textMenu li {
+        list-style: none;
+        margin: 0 10px;
+        white-space: nowrap;
+    }
+
+    .textMenu li a {
+        font-weight: 900;
+        transition: 0.5s;
+    }
+
+    .textMenu li a:hover {
+        color: var(--bg-color);
+        text-decoration: underline;
+        transition: 0.1s;
+    }
+}
+/*Text Nav Close*/
+/*Menu Styles Close*/
+
+/*Body Settings*/
+
+    body {
+        position: relative;
+        font-family: 'Nunito Sans';
+        font-weight: 400;
+        font-size: 1em;
+        line-height: 1.5em;
+        color: var(--text-color);
+        background-color: var(--bg-color);
+        margin: 0px 0px 0px 0px;
+        min-height: 100vh;
+        overflow-x: hidden;
+        width: 100%;
+    }
+
+    #bodyContent {
+        padding-top: 130px;
+        padding-bottom: 50px;
+        padding-left: 12px;
+        padding-right: 12px;
+        overflow-x: hidden;
+    }
+
+    a {
+        color: inherit;
+        background-color: inherit;
+        text-decoration: inherit;
+        cursor: pointer;
+    }
+
+    a:hover {
+        color: inherit;
+        background-color: inherit;
+        text-decoration: inherit;
+        cursor: pointer;
+    }
+
+    body:has(.switch__input:checked)  a:hover {
+        color: inherit;
+    }
+
+    .designLink {
+        position: relative;
+        overflow: visible;
+        color: var(--text-color);
+    }
+
+    .designLink::before {
+            content: "";
+            cursor: pointer;
+            display: block;
+            opacity: 1;
+            position: absolute;
+            background-image: linear-gradient(to right, var(--accent-color), var(--accent-color));
+            background-position: center;
+            transition: 0.3s ease;
+            z-index: -1;
+            width: 0px;
+            height: 0px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50px;
+            margin: 0px auto 0px auto;
+        }
+
+    .designLink:hover::before {
+            width: 150%;
+            height: 150%;
+            border-radius: 50px;
+            transition: 0.3s ease;
+        }
+
+    body:has(.switch__input:checked) .designLink {
+        color: var(--accent-color);
+    }
+
+    body:has(.switch__input:checked) .designLink::before {
+             background-image: linear-gradient(to right, var(--DMaccent-color), var(--DMaccent-color))
+        }
+
+    .bodyLink {
+        text-decoration: underline;
+        color: var(--text-color);
+    }
+
+    .bodyLink:visited {
+        color: hsl(from var(--text-color) h s calc(1 + 25));
+        text-decoration: underline;
+    }
+
+    .bodyLink:hover {
+        color: var(--accent-color);
+        text-decoration: underline;
+    }
+
+    .bodyLink:active {
+        color: var(--text-color);
+        text-decoration: underline;
+    }
+
+    .hideMob {
+        display: none;
+    }
+
+    h1 {
+        font-family: 'Krona One', 'Arial', sans-serif;
+        font-weight: 400;
+        font-size: 3em;
+        text-transform: uppercase;
+        line-height: 0.25em;
+        padding: 3em 0px 0em 0px;
+     }
+
+    .fontWarp {
+        font-family: 'Engagement', 'Garamond', serif;
+        font-weight: 400;
+        font-size: 2em;
+        text-transform: uppercase;
+    }
+ 
+    h2 {
+       font-family: 'Krona One', Arial, sans-serif;
+        font-weight: 400;
+        font-size: 1.5em;
+        line-height: 1.2em;
+        padding: 1em 0em 0em 0em;
+        text-align: center;
+    }
+
+    h3 {
+        font-family: 'Krona One', Arial, sans-serif;
+        font-weight: 400;
+        font-size: 1em;
+        margin-block-start: 0em;
+        margin-block-end: 0em;
+    }
+
+    p {
+        display: block;
+        margin-block-start: 1.5em;
+        margin-block-end: 1.5em;
+        margin-inline-start: 0px;
+        margin-inline-end: 0px;
+    }
+
+    h1 ~ p {
+        margin-block-start: 0em;
+    }
+
+    .paddingDeficit {
+        padding-top: 0em;
+    }
+
+    #bodyContent ul {
+        list-style-type: circle;
+    }
+
+    #bodyContent li {
+        padding-bottom: 10px;
+    }
+
+    .dateSub {
+        font-weight: 400;
+    }
+
+    .imageAsset {
+        padding-top: 10px;
+        width: 100%;
+    }
+
+    .divider {
+        border: none;
+        height: 3px;
+        background-color: #7e7e7e;
+        width: 42px;
+    }
+
+    .arrow {
+        margin: auto;
+        width: 235px;
+    }
+
+    .arrowHead {
+        width: 0;
+        height: 0;
+        border-left: 10px solid transparent;
+        border-right: 10px solid transparent;
+        border-bottom: 13px solid var(--bg-color);
+        margin: 0px auto;
+    }
+
+    .arrowShaft {
+        height: 12px;
+        width: 10px;
+        background-color: var(--bg-color);
+        margin: 0px auto;
+    }
+
+@media only screen and (min-width: 520px) {
+    
+    body {
+        font-size: 1.5em;
+        line-height: 1.5em;
+    }
+
+    h1 {
+        font-family: 'Krona One', 'Arial', sans-serif;
+        font-weight: 400;
+        font-size: 3.2em;
+        text-transform: uppercase;
+        line-height: 0.25em;
+        padding: 3em 0px 0em 0px;
+     }
+
+    .fontWarp {
+        font-family: 'Engagement', 'Garamond', serif;
+        font-weight: 400;
+        font-size: 2.4em;
+        text-transform: uppercase;
+    }
+ 
+    h2 {
+       font-family: 'Krona One', Arial, sans-serif;
+        font-weight: 400;
+        font-size: 2em;
+        line-height: 1.2em;
+        padding: 1em 0em 0em 0em;
+        text-align: center;
+    }
+
+    h3 {
+        font-family: 'Krona One', Arial, sans-serif;
+        font-weight: 400;
+        font-size: 1em;
+        margin-block-start: 0em;
+        margin-block-end: 0em;
+    }
+}
+
+/*body flex*/
+
+    .gridContainer {
+        margin: 20px auto 0px auto;
+    }
+
+    .grid-margin:last-of-type {
+        margin-bottom: 2em;
+    }
+  
+    @media only screen and (min-width: 1020px) {
+        #bodyContent {
+            overflow-x: visible;
+        }
+
+        .designLink {
+            text-decoration: none;
+        }
+
+        .gridContainer {
+            margin-top: 2%;
+            display: grid; 
+            grid-template-columns: 1fr 600px 1fr; 
+            grid-template-rows: auto auto auto; 
+            gap: 0px 20px; 
+        }
+        
+        .dateSub {
+            font-weight: 900;
+        }
+
+        .hideMob {
+            display: block;
+        }
+
+        .hideDesk {
+            display: none;
+        }
+
+        .paddingDeficit {
+            padding-top: 3em;
+        }
+    }
+
+    @media only screen and (min-width: 760px) and (min-height: 1020px) {
+        .hideTablet {
+            display: none;
+        }
+
+        .gridContainer {
+            grid-template-columns: 1fr 600px 1fr
+        }
+    }
+
+  
+/*Menu Switch*/
+    @media only screen and (min-width: 760px) {
+        .text-navWrapper {
+            display: inline;
+        }
+    }
+/*Menu Switch Close*/
+
+/*Selective Hover State for SVG*/
+.btt-btn {
+    display: block;
+    margin: 3em auto 0em auto;
+}
+
+.btt-btn path {
+   fill: var(--text-color);
+}
+
+.btt-btn rect {
+    fill: var(--text-color);   
+}
+
+body:has(.switch__input:checked) .btt-btn path {
+   fill: var(--accent-color);
+}
+
+body:has(.switch__input:checked) .btt-btn rect {
+    fill: var(--accent-color);   
+}
+
+.gridBody:has(.btt-btn) {
+    position: relative;
+}
+
+.gridBody:has(.btt-btn)::before {
+            content: "";
+            cursor: pointer;
+            display: block;
+            opacity: 1;
+            position: absolute;
+            background-image: linear-gradient(to right, var(--accent-color), var(--accent-color));
+            background-position: center;
+            transition: 0.3s ease;
+            z-index: -1;
+            width: 0px;
+            height: 0px;
+            top: 100%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+}
+
+.gridBody:has(.btt-btn:hover)::before {
+            width: 200px;
+            height: 200px;
+            transition: 0.3s ease;
+}
+
+body:has(.switch__input:checked) .gridBody:has(.btt-btn)::before{
+    background-image: linear-gradient(to right, var(--DMaccent-color), var(--DMaccent-color));
+}
+
+/*.bttSVGpath {
+    fill: rgb(1,1,1);
+    filter: brightness(1000);
+}
+
+.bttSVGrect1 {
+    fill: rgb(1,1,1);
+    filter: brightness(1000);
+}
+
+.bttSVGrect2 {
+    fill: rgb(1,1,1);
+    filter: brightness(1000);
+}
+
+svg:active .bttSVGpath {
+    filter: invert(99%) sepia(2%) saturate(3746%) hue-rotate(115deg) brightness(91%) contrast(92%);
+}
+
+svg:active .bttSVGrect1{
+    filter: invert(99%) sepia(2%) saturate(3746%) hue-rotate(115deg) brightness(91%) contrast(92%);
+}
+
+svg:active .bttSVGrect2{
+    filter: invert(12%) sepia(97%) saturate(3265%) hue-rotate(333deg) brightness(74%) contrast(111%);
+}
+
+@media only screen and (min-width: 1020px) {
+    svg:hover .bttSVGpath {
+        filter: invert(99%) sepia(2%) saturate(3746%) hue-rotate(115deg) brightness(91%) contrast(92%);
+    }
+
+    svg:hover .bttSVGrect1{
+        filter: invert(99%) sepia(2%) saturate(3746%) hue-rotate(115deg) brightness(91%) contrast(92%);
+    }
+
+    svg:hover .bttSVGrect2{
+        filter: invert(12%) sepia(97%) saturate(3265%) hue-rotate(333deg) brightness(74%) contrast(111%);
+    }
+}*/
+/*/ Close Selective Hover State for SVG*/
+
+/*Footer Classes*/
+
+#content-wrap {
+    min-height: calc(100% - 144px); //* 144px should be the height of the header + height of footer*/
+}
+
+/* Use only when disparity between header heights across breakpoints.
+
+@media only screen and (min-width: 760px) {
+    #content-wrap {
+        min-height: calc(100% - 144px); // 144px should be the height of your header + height of footer
+    }
+}
+*/
+
+.footer {
+    position: absolute;
+    height: 50px;
+    width: 100vw;
+    max-width: 100%;
+    bottom: 0;
+    z-index: 10;
+}
+
+.admintext {
+    position: absolute;
+    text-align: left;
+    align-self: center;
+    font-weight: 400;
+    top: 48%;
+    left: 10px;
+    margin: 0px 0px 0px 0px;
+    transition: 0.1s;
+    color: var(--text-color)"
+}
+
+body:has(.switch__input:checked) .admintext {
+    color: var(--accent-color);
+}
+
+.admintext::before {
+    content: "";
+    cursor: pointer;
+    display: block;
+    opacity: 1;
+    position: absolute;
+    background-image: linear-gradient(to right, var(--accent-color), var(--accent-color));
+    background-position: left;
+    transition: 0.3s ease;
+    z-index: -1;
+    width: 0px;
+    height: 50px;
+    top: 25%;
+    left: 0%;
+    transform: translate(-50%, -25%);
+    border-radius: 50px;
+    margin: 0px auto 0px auto;
+}
+
+.admintext:hover::before {
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    transition: 0.3s ease;
+}
+
+body:has(.switch__input:checked) .admintext::before {
+    background-image: linear-gradient(to right, var(--DMaccent-color), var(--DMaccent-color));
+}
+
+.icons {
+    position: absolute;
+    align-content: flex-end;
+    display: flex;
+    top: 14px;
+    right: 12px;
+}
+
+.icon {
+    fill: var(--text-color);
+}
+
+.icon:hover {
+    fill: var(--bg-color);
+    transition: 0.1s;
+}
+
+
+ /*/Footer Classes*/
+
+ /*Accordion Dropdown Classes*/
+.accordion-flex {
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: row;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -webkit-flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-justify-content: flex-start;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+    -webkit-align-content: stretch;
+    -ms-flex-line-pack: stretch;
+    align-content: stretch;
+    -webkit-align-items: flex-start;
+    -ms-flex-align: start;
+    align-items: flex-start;
+}
+
+.accordionFlex-item:nth-child(1) {
+    -webkit-order: 3;
+    -ms-flex-order: 3;
+    order: 3;
+    -webkit-flex: 0 1 auto;
+    -ms-flex: 0 1 auto;
+    flex: 0 1 auto;
+    -webkit-align-self: auto;
+    -ms-flex-item-align: auto;
+    align-self: auto;
+}
+
+.accordionFlex-item:nth-child(2) {
+    -webkit-order: 2;
+    -ms-flex-order: 2;
+    order: 2;
+    -webkit-flex: 0 1 auto;
+    -ms-flex: 0 1 auto;
+    flex: 0 1 auto;
+    -webkit-align-self: auto;
+    -ms-flex-item-align: auto;
+    align-self: auto;
+    padding-left: 30px;
+}
+
+.accordionFlex-item:nth-child(3) {
+    -webkit-order: 1;
+    -ms-flex-order: 1;
+    order: 1;
+    -webkit-flex: 0 1 auto;
+    -ms-flex: 0 1 auto;
+    flex: 0 1 auto;
+    -webkit-align-self: auto;
+    -ms-flex-item-align: auto;
+    align-self: auto;
+}
+
+ .accordion {
+    color: var(--bg-color);
+    background-color: #21212100;
+    cursor: pointer;
+    padding: 0em 0em 1em 0em;
+    width: 100%;
+    font-family: 'Nunito', arial, sans-serif;
+    font-size: 1em;
+    line-height: 1.4em;
+    text-align: left;
+    font-weight: 900;
+    border: none;
+    outline: none;
+    transition: 0.6s;
+}
+
+/* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+.active {
+    padding: 0em 0em 0em 0em;
+    color: var(--accent-color);
+    transition: 0.1s;
+}
+
+/* Style the accordion panel. Note: hidden by default */
+.panel {
+    padding: 0 0px;
+    background-color: #21212100;
+    display: none;
+    overflow: hidden;
+    transition: 0.6s;
+}
+.panel p:last-child {
+    padding-bottom: 1.5em;
+}
+
+.dropdownArrow {
+    display: inline-block;
+    width: 12px;
+    transform: rotate(90deg);
+    transition: 0.6s;
+}
+
+.activeArrow span {
+    transform: rotate(180deg);
+    transition: 0.6s;
+}
+
+.activeArrow span svg path {
+    fill: var(--accent-color);
+    transition: 0.1s;
+}
+
+@media only screen and (min-width: 1020px) {
+    .active, .accordion:hover {
+        color: var(--accent-color);
+        transition: 0.1s;
+    }
+
+    .active, .accordion:hover span svg path{
+        fill: var(--accent-color);
+        transition: 0.1s;
+    }
+}
+
+@media only screen and (min-width: 760px) {
+    .accordionFlex-item:nth-child(1) {
+        -webkit-order: 1;
+        -ms-flex-order: 1;
+        order: 1;
+    }
+    
+    .accordionFlex-item:nth-child(2) {
+        -webkit-order: 2;
+        -ms-flex-order: 2;
+        order: 2;
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+    
+    .accordionFlex-item:nth-child(3) {
+        -webkit-order: 3;
+        -ms-flex-order: 3;
+        order: 3;
+    }
+
+    .panel p:last-child {
+        padding-bottom: 0em;
+    }
+}
+/*Accordian Dropdown close*/
+
+.textMenuCurrentPage {
+    color: var(--accent-color);
+}
+
+@media only screen and (min-width: 760px) {
+    .textMenuCurrentPage {
+        color: var(--accent-color);
+        font-weight: 900;
+        text-decoration: underline;
+    }
+}
+
+.socialIcon {
+    display: block;
+    position: relative;
+    margin: 1em 1em 0em 0em;
+    float: left;
+}
+
+.socialIconSVGPath {
+    fill: #fff;
+}
+
+.socialIconSVGPath:hover {
+    fill: var(--bg-color);
+}
+
+body {
+    -webkit-tap-highlight-color: rgba(1, 1, 1, 0);
+}
+
+footer p {
+    line-height: 0.5em;
+}
+
+/*Dark/Light Mode Switch*/
+
+#DMswitchContainer {
+    top: 0px;
+    left: -25px;
+	border: 0;
+	margin: 0;
+	padding: 0;
+    font-size: calc(40px + (80 - 40) * (100vw - 320px) / (2560 - 320));
+    --hue: 345;
+	--trans-dur: 0.4s;
+	--trans-timing: cubic-bezier(0.65,0,0.35,1);
+    position: absolute;
+    scale: 0.5;
+}
+
+#DMswitchContainer input {
+    position: relative;
+    color: var(--text-color);
+    font: 1em/1.5 sans-serif;
+}
+
+body {
+	background-color: var(--bg-color);
+	transition:
+		background-color var(--trans-dur),
+		color var(--trans-dur);
+}
+.switch,
+.switch__input {
+	position: relative;
+	-webkit-tap-highlight-color: transparent;
+}
+.switch {
+	margin: auto;
+}
+.switch__input,
+.switch__input:before {
+	background-color: var(--text-color);
+}
+.switch__input {
+	border-radius: 0.75em;
+	cursor: pointer;
+	display: block;
+	width: 3em;
+	height: 1.5em;
+	transition: background-color var(--trans-dur) var(--trans-timing);
+	-webkit-appearance: none;
+	appearance: none;
+}
+.switch__input:before {
+	border-radius: 50%;
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0.125em;
+	left: 0.125em;
+	width: 1.25em;
+	height: 1.25em;
+	transition:
+		background-color var(--trans-dur) var(--trans-timing),
+		transform var(--trans-dur) var(--trans-timing);
+}
+.switch__icon,
+.switch__icon-part {
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+.switch__icon {
+	background-color: var(--bg-color);
+	border-radius: 50%;
+	overflow: hidden;
+	pointer-events: none;
+	top: 0.18em;
+	left: 0.225em; 
+	width: 1.25em;
+	height: 1.25em;
+	transition: transform var(--trans-dur) var(--trans-timing);
+}
+.switch__icon-part {
+	transition:
+		box-shadow var(--trans-dur) var(--trans-timing),
+		transform var(--trans-dur) var(--trans-timing);
+}
+.switch__icon-part--1,
+.switch__icon-part--2,
+.switch__icon-part--3 {
+	border-radius: 50%;
+}
+.switch__icon-part--1 {
+	background-color: var(--bg-color);
+	top: calc(50% - 0.375em);
+	left: calc(50% - 0.375em);
+	width: 0.75em;
+	height: 0.75em;
+}
+.switch__icon-part--2 {
+	background-color: var(--text-color);
+	top: calc(50% - 0.4375em);
+	left: calc(50% - 0.0625em);
+	width: 0.5em;
+	height: 0.5em;
+	transform: translate(-0.1875em,0.1875em) scale(0.2);
+}
+.switch__icon-part--3 {
+	box-shadow: 0 0 0 0.625em var(--accent-color) inset;
+	width: 1.25em;
+	height: 1.25em;
+	transform: scale(0.25);
+}
+.switch__icon-part--3 ~ .switch__icon-part {
+	background-color: var(--accent-color);
+	border-radius: 0.0625em;
+	top: 50%;
+	left: 50%;
+	width: 0.125em;
+	height: 0.1875em;
+	transform-origin: 50% 0;
+}
+.switch__icon-part--4 {
+	transform: translateX(-50%) rotate(0) translateY(0.25em);
+}
+.switch__icon-part--5 {
+	transform: translateX(-50%) rotate(45deg) translateY(0.25em);
+}
+.switch__icon-part--6 {
+	transform: translateX(-50%) rotate(90deg) translateY(0.25em);
+}
+.switch__icon-part--7 {
+	transform: translateX(-50%) rotate(135deg) translateY(0.25em);
+}
+.switch__icon-part--8 {
+	transform: translateX(-50%) rotate(180deg) translateY(0.25em);
+}
+.switch__icon-part--9 {
+	transform: translateX(-50%) rotate(225deg) translateY(0.25em);
+}
+.switch__icon-part--10 {
+	transform: translateX(-50%) rotate(270deg) translateY(0.25em);
+}
+.switch__icon-part--11 {
+	transform: translateX(-50%) rotate(315deg) translateY(0.25em);
+}
+.switch__sr {
+	overflow: hidden;
+	position: absolute;
+	width: 1px;
+	height: 1px;
+}
+
+/* `:checked` state */
+.switch__input:checked {
+	background-color: var(--accent-color);
+}
+.switch__input:checked:before,
+.switch__input:checked ~ .switch__icon {
+	transform: translateX(1.5em);
+}
+.switch__input:checked ~ .switch__icon .switch__icon-part--2 {
+	transform: translate(0,0) scale(1);
+}
+.switch__input:checked ~ .switch__icon .switch__icon-part--3 {
+	box-shadow: 0 0 0 0.25em var(--text-color) inset;
+	transform: scale(1);
+}
+.switch__input:checked ~ .switch__icon .switch__icon-part--4 {
+	transform: translateX(-50%) rotate(0) translateY(0.625em) scale(0);
+}
+.switch__input:checked ~ .switch__icon .switch__icon-part--5 {
+	transform: translateX(-50%) rotate(45deg) translateY(0.625em) scale(0);
+}
+.switch__input:checked ~ .switch__icon .switch__icon-part--6 {
+	transform: translateX(-50%) rotate(90deg) translateY(0.625em) scale(0);
+}
+.switch__input:checked ~ .switch__icon .switch__icon-part--7 {
+	transform: translateX(-50%) rotate(135deg) translateY(0.625em) scale(0);
+}
+.switch__input:checked ~ .switch__icon .switch__icon-part--8 {
+	transform: translateX(-50%) rotate(180deg) translateY(0.625em) scale(0);
+}
+.switch__input:checked ~ .switch__icon .switch__icon-part--9 {
+	transform: translateX(-50%) rotate(225deg) translateY(0.625em) scale(0);
+}
+.switch__input:checked ~ .switch__icon .switch__icon-part--10 {
+	transform: translateX(-50%) rotate(270deg) translateY(0.625em) scale(0);
+}
+.switch__input:checked ~ .switch__icon .switch__icon-part--11 {
+	transform: translateX(-50%) rotate(315deg) translateY(0.625em) scale(0);
+}
+body:has(.switch__input:checked) {
+	background-color: var(--text-color);
+	color: var(--accent-color);
+    -webkit-font-smoothing: antialiased;
+}
+
+body:has(.switch__input:checked) svg path {
+    fill: var(--accent-color);
+}
+
+@media only screen and (min-width: 520px) {
+    #DMswitchContainer {
+        left: -46px;
+        scale: 0.3;
+    }
+
+    .switch__icon {
+        top: 0.168em;
+        left: 0.2em;
+    }
+}
+
+/*Dark/Light Mode Switch Close*/

@@ -1,0 +1,11 @@
+{
+    "name": "Starter",
+    "short_name": "Starter",
+    "icons": [{
+        "src": "favicon/android-chrome-manifest.png",
+        "sizes": "192x192"
+    }],
+    "background_color": "#ffffff",
+    "theme_color": "#ffffff",
+    "display": "fullscreen"
+}
