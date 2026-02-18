@@ -686,3 +686,8 @@ body:has(.switch__input:checked) .admintext:hover {
         height: 40px; /* Shorten visualizer so it doesn't overlap text */
     }
 }
+rgba(0, 123, 255, ${val / 255})
+
+hsl(345, 100%, 25.1%)
+
+

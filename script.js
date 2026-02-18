@@ -82,7 +82,7 @@ function renderFrame() {
     let x = 0;
     dataArray.forEach(val => {
         const height = (val / 255) * canvas.height;
-        ctx.fillStyle = `rgba(0, 123, 255, ${val / 255})`;
+        ctx.fillStyle = `rgb(128, 0, 32, ${val / 255})`;
         ctx.fillRect(x, canvas.height - height, barWidth, height);
         x += barWidth + 2;
     });
