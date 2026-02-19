@@ -35,6 +35,7 @@ const promoBox = document.querySelector('.promoBox');
 const volumeSlider = document.getElementById('volume-slider');
 const volumeIcon = document.getElementById('volume-icon');
 const btnClose = document.getElementById('btn-close');
+const nowPlayingText = document.getElementById('now-playing'); // Target for track title
 
 let currentTrackElement = null;
 let audioCtx, analyser, source;
@@ -48,14 +49,27 @@ function updatePlayPauseUI(isPlaying) {
     isPlaying ? playPauseBtn.classList.add('is-playing') : playPauseBtn.classList.remove('is-playing');
 }
 
+/**
+ * Updates Volume Icon opacity and Slider 'muted' class
+ */
 function updateVolumeUI() {
+    if (!volumeSlider || !volumeIcon) return;
     if (audio.muted || audio.volume === 0) {
         volumeIcon.style.opacity = "0.3";
-    } else if (audio.volume < 0.5) {
-        volumeIcon.style.opacity = "0.6";
+        volumeSlider.classList.add('muted'); 
     } else {
-        volumeIcon.style.opacity = "1";
+        volumeSlider.classList.remove('muted');
+        volumeIcon.style.opacity = audio.volume < 0.5 ? "0.6" : "1";
     }
+}
+
+/**
+ * Syncs the CSS --value variable for the progressive track background
+ */
+function syncSliderTrack(el) {
+    if (!el) return;
+    const value = (el.value - el.min) / (el.max - el.min) * 100;
+    el.style.setProperty('--value', value + '%');
 }
 
 /* --- 3. Audio Engine & Visualizer --- */
@@ -95,6 +109,24 @@ function playTrack(element) {
     initVisualizer();
     if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
 
+    // Now Playing Visibility
+    if (nowPlayingText) {
+        const title = element.textContent.trim();
+        nowPlayingText.textContent = title;
+        
+        // Force the element to recognize it has content
+        nowPlayingText.style.display = 'flex';
+        nowPlayingText.style.height = 'auto';
+        
+        // If the browser is still being stubborn, force a pixel height
+        if (nowPlayingText.offsetHeight === 0) {
+            nowPlayingText.style.minHeight = '24px';
+        }
+        
+        console.log("Title set to:", title, "Height is:", nowPlayingText.offsetHeight);
+    }
+
+
     audio.pause();
     audio.volume = 0;
     audio.src = element.dataset.song;
@@ -116,27 +148,39 @@ function playTrack(element) {
     setTimeout(() => playerUI.classList.add('is-visible'), 10); 
     
     currentTrackElement = element;
-    document.getElementById('now-playing').textContent = element.textContent.trim();
     document.querySelector('.track-item.playing')?.classList.remove('playing');
     element.classList.add('playing');
 }
 
 function dismissPlayer() {
-    const fadeOut = setInterval(() => {
-        if (audio.volume > 0.1) {
-            audio.volume -= 0.1;
+    if (window.fadeInterval) clearInterval(window.fadeInterval);
+
+    // 1. Immediately trigger the CSS fade (opacity only)
+    // This keeps the flexbox alive but starts making it invisible
+    playerUI.classList.remove('is-visible');
+
+    window.fadeInterval = setInterval(() => {
+        if (audio.volume > 0.05) {
+            audio.volume = Math.max(0, audio.volume - 0.05);
+            // Sync slider visuals during the fade
+            volumeSlider.value = audio.volume;
+            syncSliderTrack(volumeSlider);
+            updateVolumeUI();
         } else {
-            clearInterval(fadeOut);
+            // 2. Audio has hit zero - now we clean up
+            clearInterval(window.fadeInterval);
             audio.pause();
+            audio.volume = 0;
             audio.src = "";
-            playerUI.classList.remove('is-visible');
-            setTimeout(() => playerUI.style.display = 'none', 500); 
-            document.querySelector('.track-item.playing')?.classList.remove('playing');
             
-            // Sync with Homepage Behavior: Ensure promoBox is closed
-            promoBox.classList.remove('is-active');
+            // Only turn off the flexbox (display: none) AFTER the fade is done
+            setTimeout(() => {
+                playerUI.style.display = 'none';
+                document.querySelector('.track-item.playing')?.classList.remove('playing');
+                if (promoBox) promoBox.classList.remove('is-active');
+            }, 300); // Small buffer for the CSS transition to finish
         }
-    }, 40);
+    }, 30, ); // Faster interval for a smoother "glissando" effect
 }
 
 /* --- 5. Event Listeners --- */
@@ -157,7 +201,6 @@ document.getElementById('btn-prev').addEventListener('click', () => {
     else playTrack(currentTrackElement?.previousElementSibling || trackList.lastElementChild);
 });
 
-// Close Button Listener
 btnClose.addEventListener('click', (e) => {
     e.stopPropagation();
     dismissPlayer();
@@ -184,11 +227,13 @@ progressBar.addEventListener('click', (e) => {
     audio.currentTime = pos * audio.duration;
 });
 
+// --- Volume Logic ---
 volumeSlider.addEventListener('input', (e) => {
     const val = e.target.value;
     audio.volume = val;
     audio.muted = (val == 0);
     updateVolumeUI();
+    syncSliderTrack(e.target);
 });
 
 volumeIcon.addEventListener('click', () => {
@@ -201,6 +246,7 @@ volumeIcon.addEventListener('click', () => {
     }
     audio.volume = volumeSlider.value;
     updateVolumeUI();
+    syncSliderTrack(volumeSlider);
 });
 
 /* --- 6. Integrated Homepage & Keyboard Logic --- */
@@ -209,22 +255,16 @@ function handleBoxClick(e) {
     e.stopPropagation();
     initVisualizer();
     if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
-
-    // Toggle logic for bottomTag and namebox z-index
     promoBox.classList.toggle('is-active');
-
-    // Sync Audio: If deactivated via clicking nbox, dismiss player
     if (!promoBox.classList.contains('is-active')) {
         dismissPlayer();
     }
 }
 
-// Bind to trigger text specifically
 document.querySelectorAll('.nBox1 .trigger-text, .nBox2 .trigger-text').forEach(el => {
     el.addEventListener('click', handleBoxClick);
 });
 
-// Keyboard
 window.addEventListener('keydown', (e) => {
     if (playerUI.classList.contains('is-visible')) {
         if (e.code === "Space") { e.preventDefault(); audio.paused ? audio.play() : audio.pause(); }
@@ -242,3 +282,7 @@ window.addEventListener('keydown', (e) => {
         }
     }
 });
+
+// --- Initialization ---
+syncSliderTrack(volumeSlider);
+updateVolumeUI();
