@@ -54,7 +54,7 @@ body  {
   display: grid;
   grid-template-rows: 1fr auto;
   position: relative;
-  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 body::before {
@@ -723,8 +723,10 @@ body:has(.switch__input:checked) .admintext:hover {
   .overflowWrapper {
   width: 100%;
   position: relative;
-  height: 100svh;
+  height: 100dvh;
   height: var(--true-height);
+  flex: 1;
+  overflow: inherit;
   }
 
   .contentContainer {
@@ -931,6 +933,11 @@ body:has(.switch__input:checked) .admintext:hover {
         gap: 12px;
         /* Stack elements vertically for more thumb room */
         flex-direction: column; 
+        flex-shrink: 0;
+          margin-top: auto;
+          height: 140px;
+        padding-bottom: env(safe-area-inset-bottom, 15px); 
+    box-sizing: border-box;
     }
 
     #player-ui.is-visible {
