@@ -24,20 +24,19 @@ html {
 }
 
 html, body {
-  margin: 0;
-  padding: 0;
   -ms-overflow-style: none;  /* For Internet Explorer and Edge */
   scrollbar-width: none;   /* For Firefox */
-  height: 100vh;
+  height: 100svh; /* Uses the actual visible space on mobile */
+  width: 100%;
   font-size: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* This prevents bump from Chrome Search Bar */
+  position: relative;
 }
 
 body::-webkit-scrollbar {
   display: none; /* For Chrome, Safari, Opera, etc. */
-}
-
-h1 {
-
 }
 
 body  {
@@ -167,7 +166,6 @@ a {
   height: 380px;
   background: var(--box-color);
   color: var(--text-color);
-  
   display: flex;
   flex: 1;
   position: relative;
@@ -214,13 +212,13 @@ a {
   background-image: url(https://raw.githubusercontent.com/michaelmarshall-bot/noise.bymm/refs/heads/main/assets/images/portrait1.jpg);
   /*background-image: url('/assets/images/portrait1.jpg');*/
   background-repeat: no-repeat;
-  
   /* Scaling and Clipping */
   background-size: cover; /* Fills the 40% width and clips excess height */
   background-position: left center; /* Keeps the left edge of the image visible */
   z-index: -1;
   position: relative;
   left: 50px;
+  pointer-events: none;
 }
 
 .sampleBox {
@@ -742,7 +740,7 @@ body:has(.switch__input:checked) .admintext:hover {
     display: flow-root;
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    height: 100svh;
     width: 100vw;
     overflow: hidden;
     position: relative;
