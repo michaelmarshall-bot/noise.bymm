@@ -293,15 +293,10 @@ a {
   width: 120px;
   margin-top: 20px;
   margin-right: auto;
+  margin-left: 2px;
   display: flex;
   align-items:center;
   justify-content: space-between;
-}
-
-.iconTray .trayContext {
-  font-size: 11px;
-  padding: 4px;
-  color: var(--highlight-color);
 }
 
 .iconTray svg {
