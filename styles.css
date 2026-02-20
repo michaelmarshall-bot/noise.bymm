@@ -724,6 +724,7 @@ body:has(.switch__input:checked) .admintext:hover {
   width: 100%;
   position: relative;
   height: 100svh;
+  height: var(--true-height);
   }
 
   .contentContainer {
@@ -733,6 +734,7 @@ body:has(.switch__input:checked) .admintext:hover {
     top: 50%;
     transform: translate(-50%, -50%);
     height: 100vh;
+    height: var(--true-height); 
   }
 
   .promoBox {
@@ -742,6 +744,7 @@ body:has(.switch__input:checked) .admintext:hover {
     display: flex;
     flex-direction: column;
     height: 100svh;
+    height: var(--true-height); 
     width: 100vw;
     overflow: visible;
     position: relative;
@@ -796,6 +799,7 @@ body:has(.switch__input:checked) .admintext:hover {
   .profileBox {
     width: 100vw;
     height: 100vh;
+    height: var(--true-height); 
     position: absolute;
     transform: translate(-50%, -50%);
     top: 50%;

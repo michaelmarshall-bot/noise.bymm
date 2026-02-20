@@ -1,4 +1,14 @@
 /*Page Function*/
+/*Dynamic Height Fix (Avoid Chrome Forced Dimensions) */
+const setAppHeight = () => {
+    const doc = document.documentElement;
+    // Get the exact window height in pixels
+    doc.style.setProperty('--true-height', `${window.innerHeight}px`);
+};
+
+// Initial set and update on any window resize (like the address bar appearing)
+window.addEventListener('resize', setAppHeight);
+setAppHeight();
 
 document.getElementById("currentYear").innerHTML = new Date().getFullYear();
 
