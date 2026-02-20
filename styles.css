@@ -215,6 +215,7 @@ a {
   /* Scaling and Clipping */
   background-size: cover; /* Fills the 40% width and clips excess height */
   background-position: left center; /* Keeps the left edge of the image visible */
+  box-sizing: border-box;
   z-index: -1;
   position: relative;
   left: 50px;
@@ -823,12 +824,14 @@ body:has(.switch__input:checked) .admintext:hover {
   }
 
   .profilepic {
-        top: -7%;
+        margin-top: -7%;
         left: 50%;
         flex: 0 0 60%;
-        height: 116%;
+        height: 50vh;
         width: 100%;
-        transform: translate(-50%, -50%)
+        transform: translate(-50%, -50%);
+        flex: 1; /* Occupies remaining space */
+        border-bottom: none
   }
  
 
@@ -981,16 +984,16 @@ body:has(.switch__input:checked) .admintext:hover {
       }
   
       .promoBox.is-active .profileContainer {
-        top: 25vh;
+        top: 23vh;
         transition: 2s ease;
       }
 
       .profileBox {
-        top: 58%;
+        margin-top: 5%;
       }
 
       .profilePic {
-        top: 313px;
+        top: 25svh;
         opacity: 0.2;
       }
 
