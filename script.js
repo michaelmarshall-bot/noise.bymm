@@ -2,38 +2,31 @@
 /*Dynamic Height Fix (Avoid Chrome Forced Dimensions) */
 const setAppHeight = () => {
     const doc = document.documentElement;
-    // Get the exact window height in pixels
     doc.style.setProperty('--true-height', `${window.innerHeight}px`);
 };
 
-// Initial set and update on any window resize (like the address bar appearing)
-window.addEventListener('resize', setAppHeight);
+window.addEventListener('resize', () => {
+    setAppHeight();
+    // Re-scale canvas on resize for Safari stability
+    if (audioCtx) resizeCanvas(); 
+});
 setAppHeight();
 
 document.getElementById("currentYear").innerHTML = new Date().getFullYear();
 
 var acc = document.getElementsByClassName("accordion");
-var i;
-
-for (i = 0; i < acc.length; i++) {
-  acc[i].addEventListener("click", function() {
-    /* Toggle between adding and removing the "active" class,
-    to highlight the button that controls the panel */
-    this.classList.toggle("active");
-    this.classList.toggle("activeArrow");
-
-    /* Toggle between hiding and showing the active panel */
-    var panel = this.nextElementSibling;
-    if (panel.style.display === "block") {
-      panel.style.display = "none";
-    } else {
-      panel.style.display = "block";
-    }
-  });
-    }
+for (let i = 0; i < acc.length; i++) {
+    acc[i].addEventListener("click", function() {
+        this.classList.toggle("active");
+        this.classList.toggle("activeArrow");
+        var panel = this.nextElementSibling;
+        if (panel) {
+            panel.style.display = panel.style.display === "block" ? "none" : "block";
+        }
+    });
+}
 
 /*Audio Selection*/
-/* --- 1. Selectors & Global State --- */
 const trackList = document.querySelector('#track-list');
 const audio = document.getElementById('audio-player');
 const playerUI = document.getElementById('player-ui');
@@ -45,23 +38,19 @@ const promoBox = document.querySelector('.promoBox');
 const volumeSlider = document.getElementById('volume-slider');
 const volumeIcon = document.getElementById('volume-icon');
 const btnClose = document.getElementById('btn-close');
-const nowPlayingText = document.getElementById('now-playing'); // Target for track title
+const nowPlayingText = document.getElementById('now-playing');
 
 let currentTrackElement = null;
 let audioCtx, analyser, source;
 let lastVolume = 1;
 
-/* --- 2. UI Helpers --- */
-
+/* --- UI Helpers --- */
 const formatTime = (s) => `${Math.floor(s/60)}:${Math.floor(s%60).toString().padStart(2, '0')}`;
 
 function updatePlayPauseUI(isPlaying) {
     isPlaying ? playPauseBtn.classList.add('is-playing') : playPauseBtn.classList.remove('is-playing');
 }
 
-/**
- * Updates Volume Icon opacity and Slider 'muted' class
- */
 function updateVolumeUI() {
     if (!volumeSlider || !volumeIcon) return;
     if (audio.muted || audio.volume === 0) {
@@ -73,80 +62,100 @@ function updateVolumeUI() {
     }
 }
 
-/**
- * Syncs the CSS --value variable for the progressive track background
- */
 function syncSliderTrack(el) {
     if (!el) return;
     const value = (el.value - el.min) / (el.max - el.min) * 100;
     el.style.setProperty('--value', value + '%');
 }
 
-/* --- 3. Audio Engine & Visualizer --- */
+/* --- Improved Audio Engine & Visualizer --- */
+
+function resizeCanvas() {
+    if (!canvas) return;
+    const dpr = window.devicePixelRatio || 1;
+    // Set display size
+    const rect = canvas.getBoundingClientRect();
+    // Set actual resolution
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    // Scale context to match
+    ctx.scale(dpr, dpr);
+}
 
 function initVisualizer() {
-    if (audioCtx) return;
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    // Safari Fix: Handle 'interrupted' state or existing context
+    if (audioCtx) {
+        if (audioCtx.state === 'suspended' || audioCtx.state === 'interrupted') {
+            audioCtx.resume();
+        }
+        return;
+    }
+
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    audioCtx = new AudioContext();
     analyser = audioCtx.createAnalyser();
+    
+    // Safari Fix: Connect the source ONCE. Changing audio.src won't break this connection.
     source = audioCtx.createMediaElementSource(audio);
     source.connect(analyser);
     analyser.connect(audioCtx.destination);
+    
     analyser.fftSize = 64; 
+    resizeCanvas();
     renderFrame();
 }
 
 function renderFrame() {
     requestAnimationFrame(renderFrame);
+    if (!analyser) return;
+
     const dataArray = new Uint8Array(analyser.frequencyBinCount);
     analyser.getByteFrequencyData(dataArray);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    const barWidth = (canvas.width / dataArray.length) * 2;
+    
+    const dpr = window.devicePixelRatio || 1;
+    const logicalW = canvas.width / dpr;
+    const logicalH = canvas.height / dpr;
+
+    ctx.clearRect(0, 0, logicalW, logicalH);
+    const barWidth = (logicalW / dataArray.length) * 2;
     let x = 0;
+
     dataArray.forEach(val => {
-        const height = (val / 255) * canvas.height;
-        ctx.fillStyle = `rgb(128, 0, 32, ${val / 255})`;
-        ctx.fillRect(x, canvas.height - height, barWidth, height);
+        const height = (val / 255) * logicalH;
+        ctx.fillStyle = `rgba(128, 0, 32, ${val / 255})`;
+        ctx.fillRect(x, logicalH - height, barWidth, height);
         x += barWidth + 2;
     });
 }
 
-/* --- 4. Core Track Logic (Fade In/Out) --- */
+/* --- Core Track Logic --- */
 
 function playTrack(element) {
     if (!element) return;
+
+    // Safari Fix: CORS must be set before source
+    audio.crossOrigin = "anonymous";
+    audio.src = element.dataset.song;
+
     initVisualizer();
     if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
 
-    // Now Playing Visibility
     if (nowPlayingText) {
         const title = element.textContent.trim();
         nowPlayingText.textContent = title;
-        
-        // Force the element to recognize it has content
         nowPlayingText.style.display = 'flex';
         nowPlayingText.style.height = 'auto';
-        
-        // If the browser is still being stubborn, force a pixel height
-        if (nowPlayingText.offsetHeight === 0) {
-            nowPlayingText.style.minHeight = '24px';
-        }
-        
-        console.log("Title set to:", title, "Height is:", nowPlayingText.offsetHeight);
+        if (nowPlayingText.offsetHeight === 0) nowPlayingText.style.minHeight = '24px';
     }
-
 
     audio.pause();
     audio.volume = 0;
-    audio.src = element.dataset.song;
-    audio.crossOrigin = "anonymous";
     
     audio.play().then(() => {
         const targetVolume = audio.muted ? 0 : volumeSlider.value;
         const fadeIn = setInterval(() => {
-            if (audio.volume < targetVolume - 0.1) {
-                audio.volume += 0.1;
+            if (audio.volume < targetVolume - 0.05) {
+                audio.volume += 0.05;
             } else {
                 audio.volume = targetVolume;
                 clearInterval(fadeIn);
@@ -154,8 +163,7 @@ function playTrack(element) {
         }, 40);
     }).catch(e => console.error("Playback Error:", e));
 
-    playerUI.style.display = 'flex'; 
-    setTimeout(() => playerUI.classList.add('is-visible'), 10); 
+    playerUI.classList.add('is-visible'); 
     
     currentTrackElement = element;
     document.querySelector('.track-item.playing')?.classList.remove('playing');
@@ -164,37 +172,31 @@ function playTrack(element) {
 
 function dismissPlayer() {
     if (window.fadeInterval) clearInterval(window.fadeInterval);
-
-    // 1. Immediately trigger the CSS fade (opacity only)
-    // This keeps the flexbox alive but starts making it invisible
     playerUI.classList.remove('is-visible');
 
     window.fadeInterval = setInterval(() => {
         if (audio.volume > 0.05) {
             audio.volume = Math.max(0, audio.volume - 0.05);
-            // Sync slider visuals during the fade
             volumeSlider.value = audio.volume;
             syncSliderTrack(volumeSlider);
             updateVolumeUI();
         } else {
-            // 2. Audio has hit zero - now we clean up
             clearInterval(window.fadeInterval);
             audio.pause();
             audio.volume = 0;
-            audio.src = "";
+            // Safari: Don't set src to empty string, use a null-ish value or just pause
+            audio.removeAttribute('src'); 
+            audio.load(); // Clean up the buffer
             
-            // Only turn off the flexbox (display: none) AFTER the fade is done
             setTimeout(() => {
-                playerUI.style.display = 'none';
                 document.querySelector('.track-item.playing')?.classList.remove('playing');
                 if (promoBox) promoBox.classList.remove('is-active');
-            }, 300); // Small buffer for the CSS transition to finish
+            }, 300);
         }
-    }, 30, ); // Faster interval for a smoother "glissando" effect
+    }, 30); 
 }
 
-/* --- 5. Event Listeners --- */
-
+/* --- Event Listeners --- */
 trackList.addEventListener('click', (e) => {
     const item = e.target.closest('.track-item');
     if (item) playTrack(item);
@@ -231,13 +233,11 @@ audio.addEventListener('timeupdate', () => {
     }
 });
 
-progressBar.addEventListener('click', (e) => {
-    const rect = progressBar.getBoundingClientRect();
-    const pos = (e.clientX - rect.left) / rect.width;
+progressBar.addEventListener('input', (e) => {
+    const pos = e.target.value / 100;
     audio.currentTime = pos * audio.duration;
 });
 
-// --- Volume Logic ---
 volumeSlider.addEventListener('input', (e) => {
     const val = e.target.value;
     audio.volume = val;
@@ -258,8 +258,6 @@ volumeIcon.addEventListener('click', () => {
     updateVolumeUI();
     syncSliderTrack(volumeSlider);
 });
-
-/* --- 6. Integrated Homepage & Keyboard Logic --- */
 
 function handleBoxClick(e) {
     e.stopPropagation();
@@ -293,6 +291,5 @@ window.addEventListener('keydown', (e) => {
     }
 });
 
-// --- Initialization ---
 syncSliderTrack(volumeSlider);
 updateVolumeUI();
