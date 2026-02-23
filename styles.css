@@ -880,7 +880,7 @@ body:has(.switch__input:checked) .admintext:hover {
   .dataPointsContainer {
     position: absolute;
     left: 50%;
-    top: 50%;
+    top: 40%;
     transform: translate(-50%, -50%);
     padding: 0;
     width: 100%;
@@ -915,7 +915,7 @@ body:has(.switch__input:checked) .admintext:hover {
   }
 
   .song-list {
-    top: 25%;
+    top: 23%;
     position: relative;
     flex: 1;
     display: flex;
@@ -977,7 +977,6 @@ body:has(.switch__input:checked) .admintext:hover {
     }
 
     #player-ui.is-visible {
-      mix-blend-mode: difference;
       filter: contrast(200%) brightness(120%);
     }
 
