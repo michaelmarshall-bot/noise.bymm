@@ -809,15 +809,23 @@ body:has(.switch__input:checked) .admintext:hover {
   }
 
   .promoBox.is-active .nbox1 {
-   transform: translateY(-400px);
-   left: inherit;
+    transform: translateY(-60vh); 
+    left: inherit;
+    will-change: transform;
   }
 
   .promoBox.is-active .nbox2 {
-    transform: translateY(var(--nBox2move-y));
+    transform: translateY(calc(var(--true-height) / 2));
     right: inherit;
+    will-change: transform;
   }
 
+  /* Preventing the "Ghost Swipe" */
+  /* Safari sometimes allows users to swipe these moved elements back into view */
+  .promoBox.is-active .namebox {
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+  }
   .trigger-text {
     top: unset;
     left: unset;
