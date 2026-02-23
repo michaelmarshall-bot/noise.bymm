@@ -134,6 +134,14 @@ a {
   transition-delay: 0.8s;
 }
 
+.nbox1, .nbox2 {
+  /* Force Safari to keep these on the GPU during the long transition */
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-perspective: 1000;
+  perspective: 1000;
+}
+
 .promoBox.is-active .nbox1{
   left: -300px;
   transition: all ease-in-out 0.8s;

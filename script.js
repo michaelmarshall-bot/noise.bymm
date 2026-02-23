@@ -1,15 +1,25 @@
 /*Page Function*/
-/*Dynamic Height Fix (Avoid Chrome Forced Dimensions) */
+/*Dynamic Height Fix (Optimized for Safari/Chrome UI changes) */
+let resizeTimer;
 const setAppHeight = () => {
     const doc = document.documentElement;
+    // Get the exact window height in pixels
     doc.style.setProperty('--true-height', `${window.innerHeight}px`);
 };
 
+// Replace your old event listener with this debounced version
 window.addEventListener('resize', () => {
-    setAppHeight();
-    // Re-scale canvas on resize for Safari stability
-    if (audioCtx) resizeCanvas(); 
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+        setAppHeight();
+        // Safari Fix: Only resize canvas if the visualizer has been initialized
+        if (typeof audioCtx !== 'undefined' && audioCtx) {
+            resizeCanvas(); 
+        }
+    }, 100); // 100ms pause allows Safari's UI (address bar) to finish moving
 });
+
+// Initial set
 setAppHeight();
 
 document.getElementById("currentYear").innerHTML = new Date().getFullYear();
