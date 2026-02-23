@@ -68,14 +68,6 @@ body::before {
     linear-gradient(to bottom, #80808012 1px, transparent 1px);
   background-size: 24px 24px;
   will-change: transform;
-  /* Safari Fixes */
-  -webkit-transform: translateZ(0); /* Forces GPU layer */
-  transform: translateZ(0);
-  -webkit-backface-visibility: hidden; 
-  backface-visibility: hidden;
-  -webkit-perspective: 1000;
-  perspective: 1000;
-  transform-style: preserve-3d;
 }
 
 a {
@@ -102,7 +94,7 @@ a {
   height: 550px;
   background: hsl(from var(--bg-color) / 0.75);
   margin:auto;
-  transition: transform 1s ease-in-out, background 1s ease-in-out;
+  transition: all ease-in-out 1s;
   overflow: visible;
   transform: scale(1.4);
 }
