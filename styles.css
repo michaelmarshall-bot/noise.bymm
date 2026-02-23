@@ -40,7 +40,6 @@ body::-webkit-scrollbar {
 }
 
 body  {
-  -webkit-font-smoothing: antialiased;
   background-color: var(--bg-color);
         background-image:
             radial-gradient(at 0% 0%, rgb(114, 114, 114) 0px, transparent 50%),
@@ -67,7 +66,6 @@ body::before {
   background-image: linear-gradient(to right, #80808012 1px, transparent 1px),
     linear-gradient(to bottom, #80808012 1px, transparent 1px);
   background-size: 24px 24px;
-  will-change: transform;
 }
 
 a {
@@ -132,14 +130,6 @@ a {
   right: -30px;
   transition: all ease-in-out 0.8s;
   transition-delay: 0.8s;
-}
-
-.nbox1, .nbox2 {
-  /* Force Safari to keep these on the GPU during the long transition */
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  -webkit-perspective: 1000;
-  perspective: 1000;
 }
 
 .promoBox.is-active .nbox1{
@@ -475,11 +465,12 @@ body:has(.switch__input:checked) .admintext:hover {
             transform: translateY(20px);
             transition: all 0.5s ease; /* This creates the visual fade */
           align-items: center;
+          display: flex !important; /* Keep it as flex while it exists */
           flex-direction: column;
         }
 
         #player-ui.is-visible {
-          display: flex;
+          display: flex !important;
           flex-direction: column; 
           align-items: center; 
           opacity: 1;
@@ -494,10 +485,7 @@ body:has(.switch__input:checked) .admintext:hover {
             width: 100%; 
             height: 100%; 
             z-index: -1; 
-            opacity: 0.2;
-            pointer-events: none;
-            -webkit-transform: translateZ(0); /* Force Safari GPU */
-            transform: translateZ(0);
+            opacity: 0.2; 
         }
         
         #now-playing { 
@@ -817,23 +805,15 @@ body:has(.switch__input:checked) .admintext:hover {
   }
 
   .promoBox.is-active .nbox1 {
-    transform: translateY(-60vh); 
-    left: inherit;
-    will-change: transform;
+   transform: translateY(-400px);
+   left: inherit;
   }
 
   .promoBox.is-active .nbox2 {
-    transform: translateY(calc(var(--true-height) / 2));
+    transform: translateY(var(--nBox2move-y));
     right: inherit;
-    will-change: transform;
   }
 
-  /* Preventing the "Ghost Swipe" */
-  /* Safari sometimes allows users to swipe these moved elements back into view */
-  .promoBox.is-active .namebox {
-    pointer-events: none;
-    transition: opacity 0.5s ease;
-  }
   .trigger-text {
     top: unset;
     left: unset;
@@ -979,22 +959,11 @@ body:has(.switch__input:checked) .admintext:hover {
           height: 140px;
         padding-bottom: env(safe-area-inset-bottom, 15px); 
     box-sizing: border-box;
-
-    
     }
 
     #player-ui.is-visible {
-      /* Isolate + Background to get Safari to render it before applying*/
-    isolation: isolate; 
-    background-color: rgba(255, 255, 255, 0.001);
-    mix-blend-mode: difference;
-    filter: contrast(200%) brightness(120%);
-  }
-
-    #player-ui.is-visible .player-btn.primary {
-      /*Safari Fix*/
-        mix-blend-mode: normal;
-      }
+      mix-blend-mode: difference;
+      filter: contrast(200%) brightness(120%);
     }
 
     .progress-container {
